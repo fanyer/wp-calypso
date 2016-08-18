@@ -13,6 +13,7 @@ import { localize } from 'i18n-calypso';
  */
 import PlanFeaturesHeader from './header';
 import PlanFeaturesItem from './item';
+import Popover from 'components/popover';
 import PlanFeaturesActions from './actions';
 import { isCurrentPlanPaid, isCurrentSitePlan } from 'state/sites/selectors';
 import { getPlansBySiteId } from 'state/sites/plans/selectors';
@@ -46,6 +47,19 @@ import { recordTracksEvent } from 'state/analytics/actions';
 
 class PlanFeatures extends Component {
 
+	constructor() {
+		super();
+
+		this.state = {
+			showPopover: true,
+			popoverReference: null,
+			popoverDescripcion: ''
+		};
+
+		this.closePopover = this.closePopover.bind( this );
+		this.showPopover = this.showPopover.bind( this );
+	}
+
 	render() {
 		const { planProperties } = this.props;
 
@@ -74,6 +88,8 @@ class PlanFeatures extends Component {
 						</tr>
 					</tbody>
 				</table>
+
+				{ this.renderPopover() }
 			</div>
 		);
 	}
@@ -154,11 +170,14 @@ class PlanFeatures extends Component {
 	renderMobileFeatures( features ) {
 		return map( features, ( currentFeature, index ) => {
 			return (
-				<PlanFeaturesItem key={ index } description={
-					currentFeature.getDescription
+				<PlanFeaturesItem
+					key={ index }
+					description={ currentFeature.getDescription
 						? currentFeature.getDescription()
 						: null
-				}>
+					}
+					onClick={ this.showPopover }
+				>
 					{ currentFeature.getTitle() }
 				</PlanFeaturesItem>
 			);
@@ -288,6 +307,42 @@ class PlanFeatures extends Component {
 		} );
 	}
 
+	renderPopover() {
+		return (
+			<Popover
+				id="popover__plan-features"
+				isVisible={ this.state.showPopover }
+				context={ this.state.popoverReference }
+				position="right"
+				onClose={ this.closePopover }
+				className={ classNames(
+						'info-popover__tooltip',
+						'popover__plan-features'
+					) }
+				>
+					{ this.state.popoverDescripcion }
+			</Popover>
+		);
+	}
+
+	showPopover( el, popoverDescripcion ) {
+		const shouldHide = this.state.popoverReference === el &&
+			this.state.showPopover;
+
+		this.setState( {
+			showPopover: ! shouldHide,
+			popoverDescripcion,
+			popoverReference: el
+		} );
+	}
+
+	closePopover( event ) {
+		this.setState( {
+			showPopover: false,
+			popoverReference: event.currentTarget
+		} );
+	}
+
 	renderPlanFeatureColumns( rowIndex ) {
 		const {
 			planProperties,
@@ -313,11 +368,13 @@ class PlanFeatures extends Component {
 			return (
 				currentFeature
 					? <td key={ `${ planName }-${ key }` } className={ classes }>
-						<PlanFeaturesItem description={
-											currentFeature.getDescription
-												? currentFeature.getDescription()
-												: null
-										}>
+						<PlanFeaturesItem
+							description={ currentFeature.getDescription
+								? currentFeature.getDescription()
+								: null
+							}
+							onClick={ this.showPopover }
+						>
 							{ currentFeature.getTitle() }
 						</PlanFeaturesItem>
 					</td>
@@ -443,3 +500,4 @@ export default connect(
 		recordTracksEvent
 	}
 )( localize( PlanFeatures ) );
+
