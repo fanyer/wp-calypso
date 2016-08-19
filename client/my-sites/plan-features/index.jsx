@@ -51,7 +51,7 @@ class PlanFeatures extends Component {
 		super();
 
 		this.state = {
-			showPopover: true,
+			showPopover: false,
 			popoverReference: null,
 			popoverDescription: ''
 		};
@@ -299,6 +299,7 @@ class PlanFeatures extends Component {
 	renderFeaturePopover() {
 		return (
 			<Popover
+				showDelay={ 100 }
 				id="popover__plan-features"
 				isVisible={ this.state.showPopover }
 				context={ this.state.popoverReference }
@@ -322,7 +323,8 @@ class PlanFeatures extends Component {
 					? feature.getDescription()
 					: null
 				}
-				onClick={ this.showFeaturePopover }
+				onMouseEnter={ this.showFeaturePopover }
+				onMouseLeave={ this.closeFeaturePopover }
 			>
 				{ feature.getTitle() }
 			</PlanFeaturesItem>
@@ -330,11 +332,8 @@ class PlanFeatures extends Component {
 	}
 
 	showFeaturePopover( el, popoverDescription ) {
-		const shouldHide = this.state.popoverReference === el &&
-			this.state.showPopover;
-
 		this.setState( {
-			showPopover: ! shouldHide,
+			showPopover: true,
 			popoverDescription,
 			popoverReference: el
 		} );

@@ -8,9 +8,18 @@ import React from 'react';
  */
 import Gridicon from 'components/gridicon';
 
-export default function PlanFeaturesItem( { children, onClick, description } ) {
-	const handleClickEvent = ( event ) => {
-		onClick( event.currentTarget, description );
+export default function PlanFeaturesItem( {
+	children,
+	onMouseEnter,
+	onMouseLeave,
+	description
+} ) {
+	const handleMouseEnterEvent = ( event ) => {
+		onMouseEnter( event.currentTarget, description );
+	};
+
+	const handleMouseLeaveEvent = ( event ) => {
+		onMouseLeave( event.currentTarget, description );
 	};
 
 	return (
@@ -20,7 +29,8 @@ export default function PlanFeaturesItem( { children, onClick, description } ) {
 				size={ 18 } icon="checkmark" />
 			{ children }
 			<span
-				onClick={ handleClickEvent }
+				onMouseEnter={ handleMouseEnterEvent }
+				onMouseLeave={ handleMouseLeaveEvent }
 				className="plan-features__item-tip-info"
 			>
 				<Gridicon icon="info-outline" size={ 18 } />
