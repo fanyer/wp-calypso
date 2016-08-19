@@ -339,10 +339,9 @@ class PlanFeatures extends Component {
 		} );
 	}
 
-	closeFeaturePopover( event ) {
+	closeFeaturePopover() {
 		this.setState( {
 			showPopover: false,
-			popoverReference: event.currentTarget
 		} );
 	}
 
