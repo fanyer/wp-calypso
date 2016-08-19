@@ -97,9 +97,11 @@ module.exports = {
 			}
 		}
 
+		const upgradeToBusiness = () => page( '/checkout/' + site.domain + '/business' );
+
 		renderPage(
 			context,
-			<SiteSettingsComponent sites={ sites } section={ section } />
+			<SiteSettingsComponent { ...{ sites, section, upgradeToBusiness } } />
 		);
 
 		// analytics tracking
